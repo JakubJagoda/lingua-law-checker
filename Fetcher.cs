@@ -57,6 +57,7 @@ namespace LinguaLawChecker
         private string GetArticleTextFromHtml(string html)
         {
             CQ dom = html;
+            dom["sup.reference, .noprint"].Remove(); //removes citations and [citation needed] (and maybe some other nonprintable stuff)
             CQ paragraphs = dom["p"];
             return paragraphs.Text();
         }
