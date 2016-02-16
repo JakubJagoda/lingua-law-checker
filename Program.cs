@@ -29,6 +29,10 @@ namespace LinguaLawChecker
                 string serializedResults = heapsLawExperiment.GetSerializedResults(results);
 
                 File.WriteAllText(String.Format("./{0}_HeapsResults.csv", Language.EN), serializedResults);
+
+                List<int> zipfsResults = ZipfsLawExperiment.Perform(titlesAndArticlesPairs);
+                string serializedZipfsResults = ZipfsLawExperiment.GetSerializedResults(zipfsResults);
+                File.WriteAllText(String.Format("./{0}_ZipfsResults.csv", Language.EN), serializedZipfsResults);
             }
             catch (Exception e)
             {
