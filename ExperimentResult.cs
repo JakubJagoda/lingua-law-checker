@@ -12,5 +12,6 @@ namespace LinguaLawChecker
         public string ArticleContents { get; set; }
         public int ArticleLength { get; set; }
         public int WordCount { get; set; }
+        public Language Language { get; set; }
     }
 }
