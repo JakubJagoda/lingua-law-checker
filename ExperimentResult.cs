@@ -13,5 +13,6 @@ namespace LinguaLawChecker
         public int ArticleLength { get; set; }
         public int WordCount { get; set; }
         public Language Language { get; set; }
+        public int Punctuation { get; set; }
     }
 }
