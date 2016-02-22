@@ -46,6 +46,7 @@ namespace LinguaLawChecker
                     string serializedPunctuationResults = punctuationExperiment.GetSerializedResults(punctuationResults);
                     File.WriteAllText(String.Format("./{0}_PunctuationResults.csv", language), serializedPunctuationResults);
 
+                    //IEnumerable<ExperimentResult> results = await googleExperiment.PerformAsync(articles, language);
                 }
                 catch (Exception e)
                 {
