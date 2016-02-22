@@ -10,19 +10,19 @@ namespace LinguaLawChecker
 {
     class PunctuationExperiment : Experiment
     {
-        public override IEnumerable<ExperimentResult> Perform(IEnumerable<Tuple<string, string>> pairs, Language lang)
+        public IEnumerable<ExperimentResult> Perform(IEnumerable<Article> pairs, Language lang)
         {
             Regex regex = new Regex(@"[\p{P}]");
 
             return pairs.Select(pair => {
-                int punctuation = pair.Item2.ToCharArray()
+                int punctuation = pair.Content.ToCharArray()
                     .Where(character => regex.IsMatch(character.ToString()))
                     .Count();
 
                 ExperimentResult result = new ExperimentResult();
-                result.ArticleLength = pair.Item2.Length;
+                result.ArticleLength = pair.Content.Length;
                 result.Punctuation = punctuation;
-                result.ArticleContents = pair.Item2;
+                result.ArticleContents = pair.Content;
 
                 return result;
             });

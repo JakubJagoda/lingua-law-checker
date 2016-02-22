@@ -10,22 +10,22 @@ namespace LinguaLawChecker
     class HeapsLawExperiment : Experiment
     {
         
-        public override IEnumerable<ExperimentResult> Perform(IEnumerable<Tuple<string, string>> titlesAndArticlesPairs, Language lang)
+        public IEnumerable<ExperimentResult> Perform(IEnumerable<Article> titlesAndArticlesPairs, Language lang)
         {
             IEnumerable<ExperimentResult> results = titlesAndArticlesPairs.Select(input =>
             {
-                string[] words = HeapsLawExperiment.GetWords(input.Item2).ToArray();
+                string[] words = HeapsLawExperiment.GetWords(input.Content).ToArray();
                 ExperimentResult result = new ExperimentResult {
-                    ArticleTitle = input.Item1,
-                    ArticleContents = input.Item2,
-                    ArticleLength = input.Item2.Length,
+                    ArticleTitle = input.Title,
+                    ArticleContents = input.Content,
+                    ArticleLength = input.Content.Length,
                     WordCount = words.Length
                 };
                 
                 return result;
             });
 
-            return results.OrderBy(result => result.WordCount);
+            return results.OrderBy(result => result.ArticleTitle);
         }
 
         public override string GetSerializedResults(IEnumerable<ExperimentResult> results)

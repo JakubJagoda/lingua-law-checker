@@ -38,7 +38,6 @@ namespace LinguaLawChecker
             return word;
         }
 
-        public abstract IEnumerable<ExperimentResult> Perform(IEnumerable<Tuple<string, string>> inputs, Language lang);
         public abstract string GetSerializedResults(IEnumerable<ExperimentResult> results);
     }
 }

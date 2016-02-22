@@ -9,12 +9,12 @@ namespace LinguaLawChecker
 {
     class ZipfsLawExperiment
     {
-        public static List<int> Perform(IEnumerable<Tuple<string, string>> pairs)
+        public static List<int> Perform(IEnumerable<Article> articles)
         {
             Regex regex = new Regex("[^a-zA-Z]");
 
-            List<string> words = pairs
-                .Select(pair => pair.Item2)
+            List<string> words = articles
+                .Select(pair => pair.Content)
                 .Select(article => article.Split(' '))
                 .Select(i => i.ToList())
                 .Aggregate(new List<string>(), (list, next) => list.Concat(next).ToList())

@@ -1,7 +1,9 @@
 ﻿using CsQuery;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -13,14 +15,47 @@ namespace LinguaLawChecker
     {
         private const string WIKI_ARTICLE_API_URL_TPL = "https://{0}.wikipedia.org/w/api.php?action=parse&page={1}&format=json";
         private const string WIKI_RANDOM_PAGE_TITLES_URL_TPL = "https://{0}.wikipedia.org/w/api.php?action=query&list=random&rnlimit={1}&rnnamespace=0&format=json";
-        private const int ARTICLES_COUNT = 10;
 
-        public async Task<IEnumerable<Tuple<string, string>>> GetNRandomArticlesForLanguage(Language language, int n = Fetcher.ARTICLES_COUNT)
+        public async Task<IEnumerable<Article>> GetNArticlesForLanguage(Language lang, int n, bool forceFetching = false)
+        {
+            if (forceFetching)
+            {
+                return await this.GetNRandomArticlesFromWikiForLanguage(lang, n);
+            } else
+            {
+                try
+                {
+                    return this.GetCachedArticlesForLanguage(lang);
+                } catch(Exception)
+                {
+                    return await this.GetNRandomArticlesFromWikiForLanguage(lang, n);
+                }
+            }
+        }
+
+        private async Task<IEnumerable<Article>> GetNRandomArticlesFromWikiForLanguage(Language language, int n)
         {
             IEnumerable<string> titles = await this.GetNRandomPageTitlesForLanguage(n, language);
-            IEnumerable<string> articles = await Task.WhenAll(titles.Select(title => this.GetArticleContents(title, language)));
-            IEnumerable<Tuple<string, string>> pairs = titles.Zip(articles, (title, article) => Tuple.Create(title, article));
-            return pairs;
+            IEnumerable<string> contents = await Task.WhenAll(titles.Select(title => this.GetArticleContents(title, language)));
+            IEnumerable<Article> articles = titles.Zip(contents, (title, content) => new Article {
+                Title = title,
+                Content = content
+            });
+
+            this.SaveCachedArticlesForLanguage(language, articles);
+            return articles;
+        }
+
+        private IEnumerable<Article> GetCachedArticlesForLanguage(Language lang)
+        {
+            string cached = File.ReadAllText(String.Format("./{0}_CachedData.json", lang));
+            return JsonConvert.DeserializeObject<IEnumerable<Article>>(cached);
+        }
+
+        private void SaveCachedArticlesForLanguage(Language lang, IEnumerable<Article> articles)
+        {
+            string output = JsonConvert.SerializeObject(articles);
+            File.WriteAllText(String.Format("./{0}_CachedData.json", lang), output);
         }
 
         private async Task<IEnumerable<string>> GetNRandomPageTitlesForLanguage(int n, Language language)

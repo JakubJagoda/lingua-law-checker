@@ -12,34 +12,40 @@ namespace LinguaLawChecker
         private static Fetcher fetcher = new Fetcher();
         private static HeapsLawExperiment heapsLawExperiment = new HeapsLawExperiment();
         private static PunctuationExperiment punctuationExperiment = new PunctuationExperiment();
+        private static GoogleExperiment googleExperiment = new GoogleExperiment();
+
         static void Main(string[] args)
         {
-            Task.Run(Program.MainAsync).Wait();
+            Task.Run(() => Program.MainAsync(args)).Wait();
         }
 
-        static async Task MainAsync()
+        static async Task MainAsync(string[] args)
         {
-            const int ARTICLES_COUNT = 5;
+            const int ARTICLES_COUNT = 10;
+
+            bool forceFetching = args.Contains("-f");
 
             foreach (Language language in Enum.GetValues(typeof(Language)))
             {
-                Console.WriteLine("Fetching {0} articles from {1} Wikipedia...", ARTICLES_COUNT, language);
-                IEnumerable<Tuple<string, string>> titlesAndArticlesPairs = await fetcher.GetNRandomArticlesForLanguage(language, ARTICLES_COUNT);
+                Console.WriteLine("Getting {0} articles for language {1}...", ARTICLES_COUNT, language);
+                IEnumerable<Article> articles = await fetcher.GetNArticlesForLanguage(language, ARTICLES_COUNT, forceFetching);
+
                 Console.WriteLine("Fetched, starting experiments...");
 
                 try
                 {
-                    IEnumerable<ExperimentResult> results = heapsLawExperiment.Perform(titlesAndArticlesPairs, language);
+                    IEnumerable<ExperimentResult> results = heapsLawExperiment.Perform(articles, language);
                     string serializedResults = heapsLawExperiment.GetSerializedResults(results);
                     File.WriteAllText(String.Format("./{0}_HeapsResults.csv", language), serializedResults);
 
-                    List<int> zipfsResults = ZipfsLawExperiment.Perform(titlesAndArticlesPairs);
+                    List<int> zipfsResults = ZipfsLawExperiment.Perform(articles);
                     string serializedZipfsResults = ZipfsLawExperiment.GetSerializedResults(zipfsResults);
                     File.WriteAllText(String.Format("./{0}_ZipfsResults.csv", language), serializedZipfsResults);
 
-                    IEnumerable<ExperimentResult> punctuationResults = punctuationExperiment.Perform(titlesAndArticlesPairs, language);
+                    IEnumerable<ExperimentResult> punctuationResults = punctuationExperiment.Perform(articles, language);
                     string serializedPunctuationResults = punctuationExperiment.GetSerializedResults(punctuationResults);
                     File.WriteAllText(String.Format("./{0}_PunctuationResults.csv", language), serializedPunctuationResults);
+
                 }
                 catch (Exception e)
                 {
