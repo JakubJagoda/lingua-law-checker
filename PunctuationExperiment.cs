@@ -25,7 +25,7 @@ namespace LinguaLawChecker
                 result.ArticleContents = pair.Content;
 
                 return result;
-            });
+            }).OrderBy(result => result.ArticleLength);
         }
         public override string GetSerializedResults(IEnumerable<ExperimentResult> results)
         {
