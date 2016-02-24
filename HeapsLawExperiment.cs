@@ -25,10 +25,10 @@ namespace LinguaLawChecker
                 return result;
             });
 
-            return results.OrderBy(result => result.ArticleTitle);
+            return results.OrderBy(result => result.ArticleLength);
         }
 
-        public override string GetSerializedResults(IEnumerable<ExperimentResult> results)
+        public string GetSerializedResults(IEnumerable<ExperimentResult> results)
         {
             StringBuilder csv = new StringBuilder();
 

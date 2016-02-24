@@ -36,17 +36,20 @@ namespace LinguaLawChecker
                 {
                     IEnumerable<ExperimentResult> results = heapsLawExperiment.Perform(articles, language);
                     string serializedResults = heapsLawExperiment.GetSerializedResults(results);
-                    File.WriteAllText(String.Format("./{0}_HeapsResults.csv", language), serializedResults);
+                    File.WriteAllText(String.Format("./results/{0}_HeapsResults.csv", language), serializedResults);
 
                     List<int> zipfsResults = ZipfsLawExperiment.Perform(articles);
                     string serializedZipfsResults = ZipfsLawExperiment.GetSerializedResults(zipfsResults);
-                    File.WriteAllText(String.Format("./{0}_ZipfsResults.csv", language), serializedZipfsResults);
+                    File.WriteAllText(String.Format("./results/{0}_ZipfsResults.csv", language), serializedZipfsResults);
 
                     IEnumerable<ExperimentResult> punctuationResults = punctuationExperiment.Perform(articles, language);
                     string serializedPunctuationResults = punctuationExperiment.GetSerializedResults(punctuationResults);
-                    File.WriteAllText(String.Format("./{0}_PunctuationResults.csv", language), serializedPunctuationResults);
+                    File.WriteAllText(String.Format("./results/{0}_PunctuationResults.csv", language), serializedPunctuationResults);
 
-                    //IEnumerable<ExperimentResult> results = await googleExperiment.PerformAsync(articles, language);
+                    Console.WriteLine("Getting hot searches for language {0}...", language);
+                    IEnumerable<GoogleExperimentResult> googleResults = await googleExperiment.PerformAsync(articles, language);
+                    string serializedGoogleResults = googleExperiment.GetSerializedResults(googleResults);
+                    File.WriteAllText(String.Format("./results/{0}_GoogleResults.csv", language), serializedGoogleResults);
                 }
                 catch (Exception e)
                 {
@@ -59,5 +62,5 @@ namespace LinguaLawChecker
         }
     }
 
-    public enum Language { EN, ES, DE, IT, PL, FR, SE, CZ, SK, HU }
+    public enum Language { EN, ES, DE, IT, PL, FR, SV, CZ, SK, HU }
 }

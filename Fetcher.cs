@@ -48,14 +48,14 @@ namespace LinguaLawChecker
 
         private IEnumerable<Article> GetCachedArticlesForLanguage(Language lang)
         {
-            string cached = File.ReadAllText(String.Format("./{0}_CachedData.json", lang));
+            string cached = File.ReadAllText(String.Format("./cached/{0}_CachedData.json", lang));
             return JsonConvert.DeserializeObject<IEnumerable<Article>>(cached);
         }
 
         private void SaveCachedArticlesForLanguage(Language lang, IEnumerable<Article> articles)
         {
             string output = JsonConvert.SerializeObject(articles);
-            File.WriteAllText(String.Format("./{0}_CachedData.json", lang), output);
+            File.WriteAllText(String.Format("./cached/{0}_CachedData.json", lang), output);
         }
 
         private async Task<IEnumerable<string>> GetNRandomPageTitlesForLanguage(int n, Language language)

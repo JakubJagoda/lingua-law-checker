@@ -9,11 +9,18 @@ namespace LinguaLawChecker
 {
     abstract class Experiment
     {
-        protected static IEnumerable<string> GetWords(string input)
+        protected static IEnumerable<string> GetWords(string input, bool onlyGetDistinct = true)
         {
-            return Experiment.GetAllTokens(input)
-                .Where(w => w.All(Char.IsLetter))
-                .Distinct();
+            var res = Experiment.GetAllTokens(input)
+                .Where(w => w.All(Char.IsLetter));
+
+            if (onlyGetDistinct)
+            {
+                return res.Distinct();
+            } else
+            {
+                return res;
+            }
         }
 
         static IEnumerable<string> GetAllTokens(string input)
@@ -37,7 +44,5 @@ namespace LinguaLawChecker
 
             return word;
         }
-
-        public abstract string GetSerializedResults(IEnumerable<ExperimentResult> results);
     }
 }

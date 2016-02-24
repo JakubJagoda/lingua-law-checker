@@ -56,10 +56,12 @@
     <Compile Include="ExperimentResult.cs" />
     <Compile Include="Fetcher.cs" />
     <Compile Include="GoogleExperiment.cs" />
+    <Compile Include="GoogleExperimentResult.cs" />
     <Compile Include="HeapsLawExperiment.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PunctuationExperiment.cs" />
+    <Compile Include="TrendingSearch.cs" />
     <Compile Include="ZipfsLawExperiment.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,6 @@ namespace LinguaLawChecker
         public int WordCount { get; set; }
         public Language Language { get; set; }
         public int Punctuation { get; set; }
-        public int MatchedWordsFromSearchTrends { get; set; }
+        public int RelatedSearchTermTraffic { get; set; }
     }
 }
